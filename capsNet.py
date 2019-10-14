@@ -63,11 +63,13 @@ class CapsNet(object):
         # Primary Capsules layer, return tensor with shape [batch_size, 1152, 8, 1]
         with tf.variable_scope('PrimaryCaps_layer'):
             primaryCaps = CapsLayer(num_outputs=32, vec_len=8, with_routing=False, layer_type='CONV')
+            caps1 = tf.Variable(tf.random_uniform([cfg.batch_size, 1152, 8, 1], -20.0, 20.0), dtype=tf.float32, name='caps1')
             caps1 = primaryCaps(conv1, kernel_size=9, stride=2)
 
         # DigitCaps layer, return shape [batch_size, 10, 16, 1]
         with tf.variable_scope('DigitCaps_layer'):
             digitCaps = CapsLayer(num_outputs=self.num_label, vec_len=16, with_routing=True, layer_type='FC')
+            self.caps2 = tf.Variable(tf.random_uniform([cfg.batch_size, 10, 16, 1], -20.0, 20.0), dtype=tf.float32, name='caps2')
             self.caps2 = digitCaps(caps1)
 
         # Decoder structure in Fig. 2
